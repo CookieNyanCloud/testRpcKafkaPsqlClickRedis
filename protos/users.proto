@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+option go_package = "api/";
+
+service Users {
+    rpc CreateUser (CreateRequest) returns (CDResponse){}
+    rpc DeleteUser (DeleteRequest) returns (CDResponse){}
+    rpc FindAll (Empty) returns (AllResponse){}
+}
+
+message CreateRequest {
+    string Name = 1;
+    string Password = 2;
+    string Key = 3;
+}
+
+message DeleteRequest  {
+    string Id = 1;
+    string Key = 2;
+}
+
+message CDResponse {
+    string State = 1;
+}
+
+message User {
+    string Id = 1;
+    string Name = 2;
+}
+
+message AllResponse {
+    repeated User Users = 1;
+}
+
+message Empty {
+
+}

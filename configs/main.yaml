@@ -1,0 +1,24 @@
+gRPC:
+  server: ":8081"
+  client: ":8081"
+
+postgres:
+  host:     "localhost"
+  port:     "5432"
+  username: "postgres"
+  dbname:   "postgres"
+  SSLMode:  "disable"
+
+clickHouse:
+  host: "127.0.0.1"
+  port: 9000
+  debug: true
+
+kafka:
+  net: "tcp"
+  addr: "localhost:9092"
+  topic: "userLog"
+  partition: 0
+
+redis:
+  addr: "redis:6379"
