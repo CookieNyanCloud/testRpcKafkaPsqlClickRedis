@@ -3,11 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
-	api "github.com/cookienyancloud/testrpckafkapsqlclick/protos/protos"
-	"google.golang.org/grpc"
 	"log"
 	"strings"
 	"time"
+
+	api "github.com/cookienyancloud/testrpckafkapsqlclick/protos/protos"
+	"google.golang.org/grpc"
 )
 
 const ClientHost = ":8002"

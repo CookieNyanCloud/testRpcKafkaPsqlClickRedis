@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"fmt"
+
 	. "github.com/cookienyancloud/testrpckafkapsqlclick/internal/config"
 	"github.com/jmoiron/sqlx"
 )

@@ -2,6 +2,7 @@ package messageq
 
 import (
 	"bytes"
+
 	"github.com/Shopify/sarama"
 	"github.com/cookienyancloud/testrpckafkapsqlclick/internal/domain"
 	"github.com/cookienyancloud/testrpckafkapsqlclick/internal/repo/clickLog"
@@ -30,7 +31,7 @@ func Newmq(
 type Imq interface {
 	Subscribe()
 	MessageReceived(message *sarama.ConsumerMessage) (*domain.UserLog, error)
-	MessageToQueue(message domain.UserLog) error
+	MessageToQueue(message *domain.UserLog) error
 }
 
 func (m *mq) Subscribe() {
@@ -71,7 +72,7 @@ func (m *mq) MessageReceived(message *sarama.ConsumerMessage) (*domain.UserLog, 
 	return &msg, nil
 }
 
-func (m *mq) MessageToQueue(message domain.UserLog) error {
+func (m *mq) MessageToQueue(message *domain.UserLog) error {
 	lg.Info("MessageToQueue")
 	msg := &sarama.ProducerMessage{
 		Topic:     m.topic,

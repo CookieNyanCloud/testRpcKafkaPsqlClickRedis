@@ -2,6 +2,12 @@ package app
 
 import (
 	"context"
+	"net"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
 	"github.com/cookienyancloud/testrpckafkapsqlclick/internal/cache/redis"
 	"github.com/cookienyancloud/testrpckafkapsqlclick/internal/config"
 	"github.com/cookienyancloud/testrpckafkapsqlclick/internal/messageq"
@@ -13,11 +19,7 @@ import (
 	"github.com/cookienyancloud/testrpckafkapsqlclick/pkg/database/postgres"
 	"github.com/cookienyancloud/testrpckafkapsqlclick/pkg/logger"
 	rpcserver "github.com/cookienyancloud/testrpckafkapsqlclick/pkg/server"
-	"net"
-	"os"
-	"os/signal"
-	"syscall"
-	"time"
+	_ "github.com/lib/pq"
 )
 
 func Run(configPath string) {
@@ -69,5 +71,6 @@ func Run(configPath string) {
 	logger.Check("error closing db: %v\n", err)
 	err = l.Close()
 	logger.Check("error closing server: %v\n", err)
-
+	err = syncProducer.Close()
+	logger.Check("error closing kafka prod: %v\n", err)
 }

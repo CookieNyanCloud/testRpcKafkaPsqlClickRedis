@@ -1,11 +1,12 @@
 package server
 
 import (
+	"net"
+
 	"github.com/cookienyancloud/testrpckafkapsqlclick/internal/server"
 	"github.com/cookienyancloud/testrpckafkapsqlclick/internal/services"
 	api "github.com/cookienyancloud/testrpckafkapsqlclick/protos/protos"
 	"google.golang.org/grpc"
-	"net"
 )
 
 type Server struct {

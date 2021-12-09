@@ -1,0 +1,26 @@
+version: '3.3'
+
+services:
+  redis:
+    image: 'redis:latest'
+    env_file:
+      - .env
+
+  postgres:
+    image: postgres:latest
+    volumes:
+      - ./.database/postgres/data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    ports:
+      - 5432:5432
+
+  all-test:
+    image: all-test
+    build: ./
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    ports:
+      - 8081:8081

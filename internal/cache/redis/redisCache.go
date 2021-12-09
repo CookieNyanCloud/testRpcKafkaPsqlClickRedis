@@ -2,9 +2,10 @@ package redis
 
 import (
 	"context"
+	"time"
+
 	"github.com/cookienyancloud/testrpckafkapsqlclick/internal/domain"
 	"github.com/cookienyancloud/testrpckafkapsqlclick/pkg/cache"
-	"time"
 )
 
 type Cache struct {
@@ -18,11 +19,11 @@ func NewCache(rd *cache.RedisClient, ) ICache {
 }
 
 type ICache interface {
-	CacheAll(ctx context.Context, all []domain.User) error
-	GetAll(ctx context.Context) ([]domain.User, error)
+	CacheAll(ctx context.Context, all []*domain.User) error
+	GetAll(ctx context.Context) ([]*domain.User, error)
 }
 
-func (c Cache) CacheAll(ctx context.Context, all []domain.User) error {
+func (c Cache) CacheAll(ctx context.Context, all []*domain.User) error {
 	for _, user := range all {
 		err := c.rd.Client.Set(ctx, user.Id, user, time.Minute).Err()
 		if err != nil {
@@ -32,13 +33,13 @@ func (c Cache) CacheAll(ctx context.Context, all []domain.User) error {
 	return nil
 }
 
-func (c Cache) GetAll(ctx context.Context) ([]domain.User, error) {
-	var users []domain.User
+func (c Cache) GetAll(ctx context.Context) ([]*domain.User, error) {
+	var users []*domain.User
 	keys, err := c.rd.Client.Keys(ctx, "*").Result()
 	if err != nil {
 		return nil, err
 	}
-	var user domain.User
+	var user *domain.User
 	for _, key := range keys {
 		err := c.rd.Client.Get(ctx, key).Scan(user)
 		if err != nil {

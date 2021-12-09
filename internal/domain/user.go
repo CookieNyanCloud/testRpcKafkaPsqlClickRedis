@@ -3,8 +3,9 @@ package domain
 import (
 	"bytes"
 	"encoding/gob"
-	lg "github.com/cookienyancloud/testrpckafkapsqlclick/pkg/logger/logger"
 	"time"
+
+	lg "github.com/cookienyancloud/testrpckafkapsqlclick/pkg/logger/logger"
 )
 
 type User struct {
@@ -14,9 +15,10 @@ type User struct {
 }
 
 type UserLog struct {
-	Id        string    `json:"id" db:"id" redis:"id"`
-	Name      string    `json:"name" db:"name" redis:"name"`
-	CreatedAt time.Time `json:"created_at" db:"created_at" redis:"created_at"`
+	Id        string    `db:"id" redis:"id"`
+	Name      string    `db:"name" redis:"name"`
+	Key       string    `db:"key" redis:"key"`
+	CreatedAt time.Time `db:"created_at" redis:"created_at"`
 }
 
 type Encoder interface {

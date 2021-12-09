@@ -2,6 +2,7 @@ package clickH
 
 import (
 	"fmt"
+
 	"github.com/cookienyancloud/testrpckafkapsqlclick/internal/config"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
@@ -20,4 +21,3 @@ func NewClient(cfg *config.Config) (*sqlx.DB, error) {
 	}
 	return connect, nil
 }
-

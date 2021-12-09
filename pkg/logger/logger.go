@@ -1,9 +1,10 @@
 package logger
 
 import (
+	"os"
+
 	"github.com/cookienyancloud/testrpckafkapsqlclick/pkg/logger/logger"
 	"github.com/sirupsen/logrus"
-	"os"
 )
 
 func init() {

@@ -2,6 +2,7 @@ package clickLog
 
 import (
 	"fmt"
+
 	"github.com/cookienyancloud/testrpckafkapsqlclick/internal/domain"
 	"github.com/jmoiron/sqlx"
 )
