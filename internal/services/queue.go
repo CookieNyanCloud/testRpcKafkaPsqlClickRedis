@@ -8,5 +8,5 @@ type IQueue interface {
 
 
 func (s *services) SendUserLog(user domain.UserLog) error {
-	queue := s.mq.MessageToQueue(user).
+	queue := s.mq.MessageToQueue(user)
 }

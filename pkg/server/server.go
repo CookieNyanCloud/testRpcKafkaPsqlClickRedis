@@ -19,13 +19,13 @@ func NewServer(port string) *Server {
 	}
 }
 
-func (s *Server) Run(services services.IServices) error {
+func (s *Server) Run(services services.IServices) (*net.Listener, error) {
 	gs := grpc.NewServer()
 	userServer := server.NewUsersService(services)
 	api.RegisterUsersServer(gs, userServer)
 	l, err := net.Listen("tcp", s.port)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return gs.Serve(l)
+	return &l, gs.Serve(l)
 }

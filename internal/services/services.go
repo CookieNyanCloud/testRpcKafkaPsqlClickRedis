@@ -3,7 +3,6 @@ package services
 import (
 	"context"
 	"github.com/cookienyancloud/testrpckafkapsqlclick/internal/cache/redis"
-	"github.com/cookienyancloud/testrpckafkapsqlclick/internal/domain"
 	"github.com/cookienyancloud/testrpckafkapsqlclick/internal/messageq"
 	"github.com/cookienyancloud/testrpckafkapsqlclick/internal/repo/psql"
 )
@@ -33,4 +32,3 @@ type IServices interface {
 	ISrvDb
 	IQueue
 }
-

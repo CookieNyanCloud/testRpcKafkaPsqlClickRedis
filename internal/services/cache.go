@@ -3,8 +3,8 @@ package services
 import "github.com/cookienyancloud/testrpckafkapsqlclick/internal/domain"
 
 type ISrvCache interface {
-	GetUsersCache()
-	CacheUsers()
+	GetUsersCache() ([]domain.User, error)
+	CacheUsers(all []domain.User) error
 }
 
 func (s *services) GetUsersCache() ([]domain.User, error) {

@@ -30,7 +30,7 @@ func Newmq(
 type Imq interface {
 	Subscribe()
 	MessageReceived(message *sarama.ConsumerMessage) (*domain.UserLog, error)
-	MessageToQueue(message domain.UserLog) *sarama.ProducerMessage
+	MessageToQueue(message domain.UserLog) error
 }
 
 func (m *mq) Subscribe() {
@@ -60,6 +60,7 @@ func (m *mq) Subscribe() {
 }
 
 func (m *mq) MessageReceived(message *sarama.ConsumerMessage) (*domain.UserLog, error) {
+	lg.Info("MessageReceived")
 	var msg domain.UserLog
 	var msgBytes bytes.Buffer
 	msgBytes.Write(message.Value)
@@ -70,12 +71,16 @@ func (m *mq) MessageReceived(message *sarama.ConsumerMessage) (*domain.UserLog, 
 	return &msg, nil
 }
 
-func (m *mq) MessageToQueue(message domain.UserLog) *sarama.ProducerMessage {
+func (m *mq) MessageToQueue(message domain.UserLog) error {
+	lg.Info("MessageToQueue")
 	msg := &sarama.ProducerMessage{
 		Topic:     m.topic,
 		Partition: -1,
 		Value:     message,
 	}
-
-	return msg
+	_, _, err := m.prod.SendMessage(msg)
+	if err != nil {
+		return err
+	}
+	return nil
 }
