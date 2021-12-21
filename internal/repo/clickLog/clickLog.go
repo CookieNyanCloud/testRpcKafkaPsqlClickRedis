@@ -7,7 +7,6 @@ import (
 	"path/filepath"
 
 	"github.com/cookienyancloud/testrpckafkapsqlclick/internal/domain"
-	"github.com/jmoiron/sqlx"
 )
 
 type ClickLog struct {
@@ -32,8 +31,12 @@ func (c *ClickLog) Migrate() error {
 	if ioErr != nil {
 		return ioErr
 	}
-	sql := string(b)
-	sqlx.MustExec(c.db, sql)
+	sqlS := string(b)
+
+	_, ioErr = c.db.Exec(sqlS)
+	if ioErr != nil {
+		return ioErr
+	}
 	return nil
 }
 

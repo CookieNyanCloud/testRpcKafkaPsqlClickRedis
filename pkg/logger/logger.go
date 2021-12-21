@@ -9,7 +9,7 @@ import (
 
 func init() {
 	logrus.SetOutput(os.Stdout)
-	logrus.SetFormatter(&logrus.TextFormatter{})
+	logrus.SetFormatter(&logrus.JSONFormatter{})
 }
 
 func Check(msg string, err error) {
