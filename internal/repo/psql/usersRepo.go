@@ -3,6 +3,8 @@ package psql
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
+	"path/filepath"
 
 	"github.com/cookienyancloud/testrpckafkapsqlclick/internal/domain"
 	"github.com/jmoiron/sqlx"
@@ -10,6 +12,7 @@ import (
 )
 
 type IUsersRepo interface {
+	Migrate() error
 	CreateUser(ctx context.Context, user *domain.User) error
 	DeleteUser(ctx context.Context, id string) error
 	FindAll(ctx context.Context) ([]*domain.User, error)
@@ -21,6 +24,17 @@ type UsersRepo struct {
 
 func NewUsersRepo(db *sqlx.DB) IUsersRepo {
 	return &UsersRepo{db: db}
+}
+
+func (r *UsersRepo) Migrate() error {
+	path := filepath.Join("schema", "db", "000001_init_schema.up.sql")
+	c, ioErr := ioutil.ReadFile(path)
+	if ioErr != nil {
+		return ioErr
+	}
+	sql := string(c)
+	sqlx.MustExec(r.db.DB, sql)
+	return nil
 }
 
 func (r *UsersRepo) CreateUser(ctx context.Context, user *domain.User) error {

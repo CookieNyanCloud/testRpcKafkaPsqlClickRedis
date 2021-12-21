@@ -3,3 +3,5 @@
 .bin
 .json
 .env
+data
+.database

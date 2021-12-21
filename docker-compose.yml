@@ -3,24 +3,51 @@ version: '3.3'
 services:
   redis:
     image: 'redis:latest'
+    ports:
+      - "6379:6379"
     env_file:
       - .env
-
   postgres:
     image: postgres:latest
     volumes:
       - ./.database/postgres/data:/var/lib/postgresql/data
     env_file:
       - .env
+    environment:
+      - PGDATA=./schema
     ports:
-      - 5432:5432
-
+      - "5432:5432"
+  clickhouse:
+    image: yandex/clickhouse-server:latest
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./data/clickhouse/data:/var/lib/clickhouse
+  zookeeper:
+    image: wurstmeister/zookeeper:latest
+    container_name: zookeeper
+    ports:
+      - '2181:2181'
+  kafka:
+    image: wurstmeister/kafka:latest
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - '9092:9092'
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: localhost
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
   all-test:
     image: all-test
     build: ./
     depends_on:
       - redis
+      - postgres
+      - kafka
+      - clickhouse
     env_file:
       - .env
+    #    command: ./wait-for-postgres.sh
     ports:
-      - 8081:8081
+      - "8081:8081"

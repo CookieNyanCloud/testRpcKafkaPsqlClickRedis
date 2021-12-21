@@ -27,24 +27,25 @@ func Run(configPath string) {
 	ctx := context.Background()
 
 	cfg, err := config.Init(configPath)
-	logger.Check("error init config: %v\n", err)
+	logger.Check("error init config: %v", err)
 
-	db, err := postgres.NewClient(cfg.Postgres)
-	logger.Check("error init db: %v\n", err)
+	db, err := postgres.NewClient(&cfg.Postgres)
+	logger.Check("error init db: %v", err)
 	repo := psql.NewUsersRepo(db)
-
+	err = repo.Migrate()
+	logger.Check("error migrating db: %v", err)
 	red, err := cache.NewRedisClient(cfg.Redis.Addr, ctx)
-	logger.Check("error init redis: %v\n", err)
+	logger.Check("error init redis: %v", err)
 
 	cacheUsers := redis.NewCache(red)
 
-	click, err := clickH.NewClient(cfg)
-	logger.Check("error init clickHouse: %v\n", err)
+	click, err := clickH.NewClient(&cfg.ClickHouse)
+	logger.Check("error init clickHouse: %v", err)
 	clickLg := clickLog.NewClickHouseLog(click)
-
-	syncProducer, err := messageq.NewProducer([]string{cfg.ClickHouse.Host + ":" + cfg.ClickHouse.Port})
-	logger.Check("error creating producer: %v\n", err)
-
+	err = clickLg.Migrate()
+	logger.Check("error migrating logs: %v", err)
+	syncProducer, err := messageq.NewProducer([]string{cfg.Kafka.Addr})
+	logger.Check("error creating producer: %v", err)
 	mq := messageq.Newmq(clickLg, syncProducer, cfg.Kafka.Topic)
 	//todo:close?
 	go mq.Subscribe()
@@ -54,7 +55,7 @@ func Run(configPath string) {
 	var l net.Listener
 	go func(l *net.Listener) {
 		l, err = srv.Run(Services)
-		logger.Check("error running server: %v\n", err)
+		logger.Check("error running server: %v", err)
 	}(&l)
 
 	quit := make(chan os.Signal, 1)
@@ -64,13 +65,13 @@ func Run(configPath string) {
 	ctx, shutdown := context.WithTimeout(context.Background(), timeout)
 	defer shutdown()
 	err = red.Client.Close()
-	logger.Check("error closing cache: %v\n", err)
+	logger.Check("error closing cache: %v", err)
 	err = click.Close()
-	logger.Check("error closing log: %v\n", err)
+	logger.Check("error closing log: %v", err)
 	err = db.Close()
-	logger.Check("error closing db: %v\n", err)
+	logger.Check("error closing db: %v", err)
 	err = l.Close()
-	logger.Check("error closing server: %v\n", err)
+	logger.Check("error closing server: %v", err)
 	err = syncProducer.Close()
-	logger.Check("error closing kafka prod: %v\n", err)
+	logger.Check("error closing kafka prod: %v", err)
 }

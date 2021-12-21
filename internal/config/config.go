@@ -47,29 +47,32 @@ type (
 )
 
 func Init(configsDir string) (*Config, error) {
-	if err := parseEnv(); err != nil {
-		return nil, err
-	}
 
 	if err := parseConfigFile(configsDir); err != nil {
 		return nil, err
 	}
 
 	var cfg Config
+
 	if err := unmarshal(&cfg); err != nil {
 		return nil, err
 	}
-	setFromEnv(&cfg)
+	if err := parseEnv(&cfg); err != nil {
+		return nil, err
+	}
 	return &cfg, nil
 }
 
-func parseEnv() error {
-	if err := godotenv.Load(); err != nil {
+func parseEnv(cfg *Config) error {
+	if err := godotenv.Load(".env"); err != nil {
 		return err
 	}
-	if err := parsePostgresEnvVariables(); err != nil {
+	viper.AddConfigPath(".")
+	viper.SetConfigFile(".env")
+	if err := viper.ReadInConfig(); err != nil {
 		return err
 	}
+	cfg.Postgres.Password = viper.GetString("postgres_pass")
 	return nil
 }
 
@@ -99,13 +102,4 @@ func unmarshal(cfg *Config) error {
 		return err
 	}
 	return nil
-}
-
-func setFromEnv(cfg *Config) {
-	cfg.Postgres.Password = viper.GetString("postgres.pass")
-}
-
-func parsePostgresEnvVariables() error {
-	viper.SetEnvPrefix("postgres")
-	return viper.BindEnv("pass")
 }

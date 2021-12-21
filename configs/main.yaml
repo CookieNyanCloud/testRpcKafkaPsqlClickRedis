@@ -1,6 +1,6 @@
 gRPC:
   server: ":8081"
-  client: ":8081"
+  client: ":8082"
 
 postgres:
   host:     "localhost"
@@ -12,7 +12,7 @@ postgres:
 clickHouse:
   host: "127.0.0.1"
   port: 9000
-  debug: true
+  debug: "true"
 
 kafka:
   net: "tcp"
